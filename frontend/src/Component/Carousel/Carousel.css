@@ -1,0 +1,26 @@
+/* Additional custom styling for the carousel */
+.carousel-fade .carousel-item {
+    transition: opacity 1s ease;
+  }
+  
+  .carousel-fade .carousel-item.active {
+    opacity: 1;
+  }
+  
+  .carousel-fade .carousel-item-next.carousel-item-left,
+  .carousel-fade .carousel-item-prev.carousel-item-right,
+  .carousel-fade .carousel-item.active {
+    opacity: 0;
+  }
+  
+  .carousel-fade .carousel-item-next,
+  .carousel-fade .carousel-item-prev,
+  .carousel-fade .carousel-item.active + .carousel-item,
+  .carousel-fade .carousel-item.carousel-item-left + .carousel-item,
+  .carousel-fade .carousel-item.carousel-item-right + .carousel-item {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  
