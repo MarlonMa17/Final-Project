@@ -22,11 +22,11 @@ const WebsiteViewer = () => {
   return (
     <div className="website-container">
       <div className="card">
-        <h1>Website 1 Content</h1>
+        <h1>Coffee Espresso</h1>
         <div dangerouslySetInnerHTML={{ __html: websiteContent1 }} />
       </div>
       <div className="card">
-        <h1>Website 2 Content</h1>
+        <h1>Resturant</h1>
         <div dangerouslySetInnerHTML={{ __html: websiteContent2 }} />
       </div>
     </div>
