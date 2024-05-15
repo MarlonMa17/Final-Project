@@ -5,112 +5,102 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Initialize a response array
-//$response = [];
-
-
-
-// initialize the response JSON return
-$response = []; 
-
-
-// Determine the request method
-$method = $_SERVER['REQUEST_METHOD'];
-
-if ($method === 'OPTIONS') {
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-    http_response_code(204); 
+// Handle OPTIONS request for CORS preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
     exit;
 }
 
+// Handle GET request for the first API
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['api']) && $_GET['api'] === 'first') {
+    $response = ["request" => 'GET for First API'];
+    echo json_encode($response);
+    exit;
+}
 
+// Handle POST request for the first API
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['api']) && $_GET['api'] === 'first') {
+    // Retrieve JSON data from the request body
+    $rawData = file_get_contents('php://input');
 
-// By default, the server must load up the credentials that are within the actual input file
-// If the file does not exist, then it will throw an error by default
-if($method === 'GET'){                             
-    $response = ["request" => 'GET']; 
-   handleGetRequest($response); 
-} else if ($method === "POST"){                 // to handle the credentials and the input field form the modal
-    $response = ["request" => 'POST']; 
-        $rawData = file_get_contents('php://input');
+    // Decode JSON data
+    $data = json_decode($rawData, true);
 
-             $data = json_decode($rawData, true);
+    // Check if JSON decoding was successful
+    if (json_last_error() === JSON_ERROR_NONE) {
+        // Prepare data to be sent as JSON
+        $postData = json_encode($data);
 
-        if (json_last_error() === JSON_ERROR_NONE) {
-                    // Access data from $data['username'] and $data['password']
-                    
-                    handlePostRequest($response, $data);
-                    
+        // URL of the API endpoint for the first API
+        $apiUrl = 'https://manjeshprasad.com/DBMS/Server.php';
+
+        // Set cURL options
+        $ch = curl_init($apiUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $postData,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        // Execute the cURL request
+        $response = curl_exec($ch);
+
+        // Check for errors
+        if ($response === false) {
+            $error = curl_error($ch);
+            echo json_encode(["error" => $error]);
+            exit;
         }
-} else { 
-    $response = ["request" => "error"]; 
-    $response = ["status" => "fail"]; 
-    http_response_code(405); 
-}
 
-echo json_encode($response); 
+        // Close cURL session
+        curl_close($ch);
 
-
-function handleGetRequest(&$response){ 
-    $filePath = "./TextFiles/contactInfo.txt"; 
-        try {
-            if (!file_exists($filePath)) {
-                throw new Exception("File not found");
-            }
-            $file_content = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            $response['fileContent'] = $file_content;
-        } catch (Exception $e ){ 
-        $response['message'] = $e->getMessage(); 
+        // Return the response back to the client
+        echo $response;
+    } else {
+        // JSON decoding failed
+        http_response_code(400); // Bad Request
+        echo json_encode(["error" => "Error decoding JSON data"]);
     }
+    exit;
 }
 
-
-function handlePostRequest(&$response, $data){ 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['api']) && $_GET['api'] === 'second') {
    
-    try {
-        if (!isset($data['username']) || !isset($data["password"])) {
-            $response['status'] = 'error';
-            $response['message'] = 'Username and password are required';
-            http_response_code(400); // Bad request
-            return;
-        }
-    
-        $username = $data['username'];
-        $password = $data["password"];
-    
-        $file = fopen("./TextFiles/credentials.txt", "r");
-        if ($file === false) {
-            throw new Exception("There was a problem opening the file");
-        }
-    
+    $apiUrl = 'https://manjeshprasad.com/DBMS/Review.php';
 
-        $loginSuccessful = false;
-            
-            while (!feof($file)) {
-                $fileContent = fgets($file);
-                list($text1, $text2) = explode(' ', $fileContent);
 
-                // delete the space characters if present
-                if (trim($text1) == $username && trim($text2) == $password) {
-                    $loginSuccessful = true;
-                    break;
-                }
-            }
-            
-            fclose($file);
-            
-            if ($loginSuccessful) {
-                $response["message"] = [ "Hello, " . $username . ", Welcome Back"];
-            } else { 
-                $response["message"] = [ "Could not find login Information"];
-            }
+    $ch = curl_init($apiUrl);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+    ]);
+
     
-    } catch (Exception $e) {
-        $response['status'] = 'error';
-        $response['message'] = $e->getMessage();
-        http_response_code(500); // Internal Server Error
+    $response = curl_exec($ch);
+
+    
+    if ($response === false) {
+        $error = curl_error($ch);
+        echo json_encode(["error" => $error]);
+        exit;
     }
+
+    
+    curl_close($ch);
+
+    echo $response;
+    exit;
 }
+
+// Handle POST request for the second API
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['api']) && $_GET['api'] === 'second') {
+    // Handle POST request for the second API
+    // Add your logic here for the second API
+    exit;
+}
+]
+echo json_encode(["error" => "Method not allowed"]);
 ?>
