@@ -1,35 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import './Review.css';
-
+import ReviewHistory from "./ReviewHistory";
 export default function Review() {
-    // const [reviews, setReviews] = useState('');
+
+
+        // THE Form will be send in a way of json
     const [formData, setFormData] = useState({
         name: '',
-        comment: ''
+        review: '' 
     });
 
-    // useEffect(() => {
-    //     const fetchWebsiteContent = async (url, setContent) => {
-    //         try {
-    //             const response = await fetch(url);
-    //             const htmlContent = await response.text();
-    //             setContent(htmlContent);
-    //         } catch (error) {
-    //             console.error('Error fetching website content:', error);
-    //         }
-    //     };
 
-    //     fetchWebsiteContent('https://cors-anywhere.herokuapp.com/https://manjeshprasad.com/DBMS/', setReviews);
-
-    // }, []);
+    const [responseMessage, setResponseMessage] = useState('');
 
     const handleFormSubmit = async (event) => {
-        event.preventDefault();
-     
-        
+        event.preventDefault();                             // prevent the page from refreshing
 
         try {
-            const response = await fetch('https://manjeshprasad.com/DBMS/', {
+            const response = await fetch('http://localhost:80?api=second', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,9 +29,12 @@ export default function Review() {
                 throw new Error('Failed to submit review');
             }
 
+            const responseData = await response.json();
+            setResponseMessage(responseData.message);
+
             setFormData({
                 name: '',
-                comment: ''
+                review: ''
             });
         } catch (error) {
             console.error('Error submitting review:', error);
@@ -59,9 +50,9 @@ export default function Review() {
     };
 
     return (
-        <div className = "container">
-          
-
+        <>
+        <ReviewHistory />
+        <div className="container">
             <h1>Add A Review</h1>
             <form onSubmit={handleFormSubmit}>
                 <input
@@ -72,13 +63,16 @@ export default function Review() {
                     onChange={handleInputChange}
                 />
                 <textarea
-                    name="comment"
-                    placeholder="Your comment"
-                    value={formData.comment}
+                    name="review" // Change 'comment' to 'review'
+                    placeholder="Your review" // Change 'comment' to 'review'
+                    value={formData.review} // Change 'comment' to 'review'
                     onChange={handleInputChange}
                 ></textarea>
                 <button type="submit">Submit Review</button>
             </form>
+            {responseMessage && <div className="response-message">{responseMessage}</div>}
         </div>
+
+        </>
     );
 }

@@ -15,14 +15,30 @@ const Navbar = () => {
   const [loginUserName, setLoginUserName] = useState('Login'); 
   const [createAccount, setCreateAccount] = useState('Create Account')
 
-  // Effect to handle login request
+  /* **************** The Use Effect will handle the logic within the login properties ********************
+      PRE-REQ --> LOGIC
+              --> JSON Body:  User inputed and sent to the backend as a JSON Format
+
+
+        IF THE LOGIN IS SUCCESSFUL: 
+                  THEN THE USERNAME SHOULD CHANGE AND THE CREATE ACCOUNT SHOULD DISAPPEAR 
+
+        ELSE IF LOGIN FAILS: 
+                  THEN AN EROR WILL BE THROWN AND THE USER HAS TO RE-ENTER THE PROPER REDENTIALS
+
+
+      The call should be make to the first API Gateway which will handle the login behavior
+  ********************************************************************************/ 
+
 useEffect(() => {
   if (shouldLogin) {
     const loginData = {
       username: username,
       password: password,
     };
-    fetch('http://localhost:80?api=first', { // Specify the first API endpoint
+
+    // ************ Sending a Request to the First API Gateway ****************** //
+    fetch('http://localhost:80?api=first', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,11 +51,9 @@ useEffect(() => {
         }
         return response.json();
       })
-      .then((data) => {
-        // Display the message in an alert
+      .then((data) => {               // Condition of data being successful
+        
         alert(data.message);
-      
-        // Set the login user name based on the received data
         setLoginUserName(data.username);
         setCreateAccount(''); 
         setShouldLogin(false);
@@ -51,13 +65,14 @@ useEffect(() => {
         }
       })
       .catch((error) => {
-        console.error(error);
-        alert('Error: Network response was not ok', error); // Display an error message in an alert
+        // console.error(error);
+        alert(error); 
         setShouldLogin(false);
       });
   }
-}, [shouldLogin, username, password]); // Include username and password in the dependency array
-        
+}, [shouldLogin]); 
+
+
 
   // Handler for login button click
   const handleLoginClick = () => {

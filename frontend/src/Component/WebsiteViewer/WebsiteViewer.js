@@ -7,7 +7,7 @@ const WebsiteViewer = () => {
   const [websiteContent2, setWebsiteContent2] = useState('');
   const [websiteContent3, setWebsiteContent3] = useState('');
   
-  const cardRef2 = useRef(null); // Reference for the second card
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const fetchWebsiteContent = async (url, setContent) => {
@@ -27,9 +27,8 @@ const WebsiteViewer = () => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      // Scroll the second card horizontally by a small amount
-      cardRef2.current.scrollLeft += 2; // Adjust the scroll speed as needed
-    }, 50); // Adjust the interval (milliseconds) to control the speed of scrolling
+      containerRef.current.scrollLeft += 2; // Adjust the scrolling speed here
+    }, 50); // Adjust the interval duration here (milliseconds)
 
     return () => {
       // Clean up the interval when the component unmounts
@@ -40,18 +39,17 @@ const WebsiteViewer = () => {
   return (
     <>
       <h1>{visitedWebsites}</h1>
-      <div className="website-container">
+      <div className="website-container" ref={containerRef}>
         <a href='https://manjeshprasad.com/Assignment2/' target="_blank" rel="noopener noreferrer">
           <div className="card">
-            <div>
               <h1>Coffee Espresso</h1>
               <p>A small coffee delivery service that scours the entire internet to find the highest quality coffee for our customers.</p>
+              <img src="https://t4.ftcdn.net/jpg/01/16/61/93/360_F_116619399_YA611bKNOW35ffK0OiyuaOcjAgXgKBui.jpg" />
             </div>
-          </div>
         </a>
 
         <a href='https://marlonhh.com/' target="_blank" rel="noopener noreferrer">
-          <div className="card" ref={cardRef2}> {/* Assign the ref to the second card */}
+          <div className="card">
             <h1>MarLONG</h1>
             <div dangerouslySetInnerHTML={{ __html: websiteContent2 }} />
           </div>
