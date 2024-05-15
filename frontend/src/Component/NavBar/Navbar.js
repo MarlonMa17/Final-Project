@@ -16,39 +16,48 @@ const Navbar = () => {
   const [createAccount, setCreateAccount] = useState('Create Account')
 
   // Effect to handle login request
-  useEffect(() => {
-    if (shouldLogin) {
-      const loginData = {
-        username: username,
-        password: password,
-      };
-      fetch('http://localhost:80', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
+useEffect(() => {
+  if (shouldLogin) {
+    const loginData = {
+      username: username,
+      password: password,
+    };
+    fetch('http://localhost:80?api=first', { // Specify the first API endpoint
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          alert(JSON.stringify(data, null, 2)["message"]); // Display the message in an alert
-
-          // Set the login user name based on the received data
-          setLoginUserName(data.username);
-          setCreateAccount(''); 
-          setShouldLogin(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          setShouldLogin(false);
-        });
-    }
-  }, [shouldLogin]);          
+      .then((data) => {
+        // Display the message in an alert
+        alert(data.message);
+      
+        // Set the login user name based on the received data
+        setLoginUserName(data.username);
+        setCreateAccount(''); 
+        setShouldLogin(false);
+      
+    
+        if (data.message === 'Login successful') {
+          setLoginUserName(username); // Update login user name
+          setCreateAccount(''); // Hide create account button
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Error: Network response was not ok', error); // Display an error message in an alert
+        setShouldLogin(false);
+      });
+  }
+}, [shouldLogin, username, password]); // Include username and password in the dependency array
+        
 
   // Handler for login button click
   const handleLoginClick = () => {

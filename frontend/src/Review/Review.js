@@ -25,6 +25,8 @@ export default function Review() {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
+     
+        
 
         try {
             const response = await fetch('https://manjeshprasad.com/DBMS/', {
@@ -57,10 +59,8 @@ export default function Review() {
     };
 
     return (
-        <div class = "container">
-            {/* <div className="card">
-                <div dangerouslySetInnerHTML={{ __html: reviews }} />
-            </div> */}
+        <div className = "container">
+          
 
             <h1>Add A Review</h1>
             <form onSubmit={handleFormSubmit}>

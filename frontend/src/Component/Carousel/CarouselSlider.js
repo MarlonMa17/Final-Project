@@ -6,7 +6,7 @@ import CarouselImage from './CarouselImage';
 export default function CarouselSlider() {
   const img = "https://www.advanceconsulting.com/wp-content/uploads/2020/03/Beautiful-Business.jpg"; 
   return (
-    <AwesomeSlider className="slider" animation="cubeAnimation">
+    <AwesomeSlider className="slider" animation="cubeAnimation" interval={5000}>
       <div>
         <CarouselImage image="https://www.advanceconsulting.com/wp-content/uploads/2020/03/Beautiful-Business.jpg" alt="Image 1" className="image" note="Small Startup Company tailored to help local Businesses" />
       
@@ -15,8 +15,16 @@ export default function CarouselSlider() {
       <div>
         <CarouselImage image="https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2019/10/business_with_esa/21093947-3-eng-GB/Business_with_ESA_pillars.jpg" alt="Image 2" className="image" />
       </div>
-      <div>3</div>
-      <div>4</div>
+      <div>
+
+      <CarouselImage image="https://assets.entrepreneur.com/content/3x2/2000/20150429160658-website-traffic.jpeg" alt="Image 3" className="image" />
+      </div>
+      <div>
+
+      <CarouselImage image="https://upload.wikimedia.org/wikipedia/commons/e/e4/Latte_and_dark_coffee.jpg" alt="Image 3" className="image" />
+      </div>
     </AwesomeSlider>
+
+
   );
 }
