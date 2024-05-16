@@ -1,8 +1,10 @@
-import React, {useState} from "react";
-
+import React from "react";
+import "./Navbutton.css";
 
 export default function Navbutton(props) {
-    return <h1 className=".navbar-btn" onClick={props.onClick}>{
-        props.name
-        }</h1>;
+    return (
+        <button className="navbar-btn" onClick={props.onClick}>
+            {props.name}
+        </button>
+    );
 }
